@@ -1,0 +1,85 @@
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-dark: #f3f3f3;
+    --color-light: #333;
+    --color-white: #2a2a2a;
+    --color-light-grey: rgb(48, 48, 48);
+    --color-dark-grey: rgb(36, 36, 36);
+    --color-middle-grey: #a0a0a0;
+  }
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: #ffffff #808080;
+  }
+  *::-webkit-scrollbar {
+    width: 16px;
+  }
+  *::-webkit-scrollbar-track {
+    background: #333;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: #fff;
+    border-radius: 10px;
+    border: 4px solid #333;
+  }
+  ::-webkit-scrollbar-corner {
+    background-color: #333;
+  }
+  .form {
+    &__input {
+      background-color: rgba(0, 0, 0, 0.4);
+      &:focus {
+        background-color: rgba(0, 0, 0, 0.6);
+      }
+    }
+    &__btn {
+      background-color: #2a2a2a;
+      color: #fff;
+      &:focus {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+    }
+  }
+  .logo {
+    background: url("../img/icon.png") no-repeat center center / contain;
+  }
+}
+@media (prefers-color-scheme: light) {
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: #808080 #ffffff;
+  }
+  *::-webkit-scrollbar {
+    width: 16px;
+  }
+  *::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: #808080;
+    border-radius: 10px;
+    border: 4px solid #ffffff;
+  }
+  ::-webkit-scrollbar-corner {
+    background-color: #ffffff;
+  }
+  .logo {
+    background: url("../img/logo.png") no-repeat center center / contain;
+  }
+  .form {
+    &__input {
+      background-color: rgba(255, 255, 255, 0.4);
+      color: var(--color-dark);
+      &:focus {
+        background-color: rgba(255, 255, 255, 0.6);
+      }
+    }
+
+    &__btn {
+      background-color: #fff;
+      &:focus {
+        background-color: rgba(255, 255, 255, 0.8);
+      }
+    }
+  }
+}
