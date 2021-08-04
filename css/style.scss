@@ -4,6 +4,10 @@
 	box-sizing: inherit;
 }
 
+.preload * {
+	transition: none !important;
+}
+
 html {
 	font-size: 62.5%;
 	box-sizing: border-box;
@@ -87,7 +91,7 @@ h2 {
 	gap: 2rem;
 
 	/* NOTE This creates the fade in/out anumation */
-	opacity: 1;
+	opacity: 0;
 	transition: all 1s;
 }
 .balance {
