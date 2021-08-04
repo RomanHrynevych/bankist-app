@@ -179,7 +179,7 @@ btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   const transferToUser = findAccountByOwner(inputTransferTo.value);
   const amount = Number(inputTransferAmount.value);
-  if (transferToUser !== currentUser) {
+  if (transferToUser !== currentUser && transferToUser) {
     if (amount < 0) {
       alert(`You can't type a negative number`);
       return;
@@ -198,7 +198,22 @@ btnTransfer.addEventListener('click', function (e) {
   } else {
     alert(`This account is't exist ⛔️ or you try transfer to yourself 😁`);
   }
-  // inputTransferAmount inputTransferTo
+});
+
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  if (
+    inputCloseUsername.value === currentUser.username &&
+    Number(inputClosePin.value) === currentUser.pin
+  ) {
+    accounts.splice(accounts.indexOf(currentUser), 1);
+    containerApp.style.opacity = 0;
+    labelWelcome.textContent = 'Log in to get started';
+    inputArray.forEach(function (mov) {
+      mov.value = '';
+      mov.blur();
+    });
+  }
 });
 
 /////////////////////////////////////////////////

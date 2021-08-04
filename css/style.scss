@@ -1,7 +1,18 @@
+@import "darkmode.scss";
+::root {
+	--color-dark: #333;
+	--color-light: #f3f3f3;
+	--color-white: #fff;
+	--color-light-grey: #ccc;
+	--color-dark-grey: #eee;
+	--color-middle-grey: #777;
+}
+
 * {
 	margin: 0;
 	padding: 0;
 	box-sizing: inherit;
+	outline: none;
 }
 
 .preload * {
@@ -15,8 +26,8 @@ html {
 
 body {
 	font-family: "Poppins", sans-serif;
-	color: #444;
-	background-color: #f3f3f3;
+	color: var(--color-dark);
+	background-color: var(--color-light);
 	height: 100vh;
 	padding: 2rem;
 }
@@ -32,7 +43,7 @@ h2 {
 	margin-bottom: 1.5rem;
 	font-size: 1.7rem;
 	font-weight: 600;
-	color: #333;
+	color: var(--color-dark);
 }
 
 .welcome {
@@ -41,11 +52,11 @@ h2 {
 }
 .logo {
 	height: 5.25rem;
+	width: 5.25rem;
 }
 .login {
 	display: flex;
 	&__input {
-		border: none;
 		padding: 0.5rem 2rem;
 		font-size: 1.6rem;
 		font-family: inherit;
@@ -53,15 +64,16 @@ h2 {
 		width: 12rem;
 		border-radius: 10rem;
 		margin-right: 1rem;
-		color: inherit;
-		border: 1px solid #fff;
+		color: var(--color-white);
+		background: #eee;
+		border: 1px solid var(--color-middle-grey);
 		transition: all 0.3s;
 		&::focus {
 			outline: none;
-			border: 1px solid #ccc;
+			border: 1px solid var(--color-light-grey);
 		}
 		&::placeholder {
-			color: #bbb;
+			color: var(--color-dark-grey);
 		}
 	}
 
@@ -69,7 +81,7 @@ h2 {
 		border: none;
 		background: none;
 		font-size: 2.2rem;
-		color: inherit;
+		color: var(--color-middle-grey);
 		cursor: pointer;
 		transition: all 0.3s;
 	}
@@ -79,7 +91,7 @@ h2 {
 .btn--sort:hover,
 .btn--sort:focus {
 	outline: none;
-	color: #777;
+	color: var(--color-dark);
 }
 .app {
 	position: relative;
@@ -91,7 +103,7 @@ h2 {
 	gap: 2rem;
 
 	/* NOTE This creates the fade in/out anumation */
-	opacity: 0;
+	opacity: 1;
 	transition: all 1s;
 }
 .balance {
@@ -108,7 +120,7 @@ h2 {
 
 	&__date {
 		font-size: 1.4rem;
-		color: #888;
+		color: var(--color-middle-grey);
 	}
 
 	&__value {
@@ -118,21 +130,22 @@ h2 {
 }
 .movements {
 	grid-row: 2 / span 3;
-	background-color: #fff;
+	background-color: var(--color-white);
 	border-radius: 1rem;
 	overflow: scroll;
+	overflow-x: hidden;
 	&__row {
 		padding: 2.25rem 4rem;
 		display: flex;
 		align-items: center;
-		border-bottom: 1px solid #eee;
+		border-bottom: 1px solid var(--color-dark-grey);
 	}
 
 	&__type {
 		font-size: 1.1rem;
 		text-transform: uppercase;
 		font-weight: 500;
-		color: #fff;
+		color: var(--color-white);
 		padding: 0.1rem 1rem;
 		border-radius: 10rem;
 		margin-right: 2rem;
@@ -149,7 +162,7 @@ h2 {
 		font-size: 1.1rem;
 		text-transform: uppercase;
 		font-weight: 500;
-		color: #666;
+		color: var(--color-light-grey);
 	}
 
 	&__value {
@@ -191,6 +204,10 @@ h2 {
 	font-size: 1.3rem;
 	font-weight: 500;
 	cursor: pointer;
+	color: var(--color-middle-grey);
+}
+.operation h2 {
+	color: #333;
 }
 .operation {
 	border-radius: 1rem;
@@ -222,7 +239,7 @@ h2 {
 		font-family: inherit;
 		font-size: 1.5rem;
 		text-align: center;
-		color: #333;
+		color: var(--color-dark);
 		padding: 0.3rem 1rem;
 		border-radius: 0.7rem;
 		transition: all 0.3s;
@@ -236,7 +253,6 @@ h2 {
 		border: none;
 		border-radius: 0.7rem;
 		font-size: 1.8rem;
-		background-color: #fff;
 		cursor: pointer;
 		transition: all 0.3s;
 		&:focus {

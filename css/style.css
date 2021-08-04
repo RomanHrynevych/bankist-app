@@ -1,8 +1,100 @@
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-dark: #f3f3f3;
+    --color-light: #333;
+    --color-white: #2a2a2a;
+    --color-light-grey: rgb(48, 48, 48);
+    --color-dark-grey: rgb(36, 36, 36);
+    --color-middle-grey: #a0a0a0;
+  }
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: #ffffff #808080;
+  }
+  *::-webkit-scrollbar {
+    width: 16px;
+  }
+  *::-webkit-scrollbar-track {
+    background: #333;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: #fff;
+    border-radius: 10px;
+    border: 4px solid #333;
+  }
+  ::-webkit-scrollbar-corner {
+    background-color: #333;
+  }
+  .form__input {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  .form__input:focus {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+  .form__btn {
+    background-color: #2a2a2a;
+    color: #fff;
+  }
+  .form__btn:focus {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+  .logo {
+    background: url("../img/icon.png") no-repeat center center/contain;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: #808080 #ffffff;
+  }
+  *::-webkit-scrollbar {
+    width: 16px;
+  }
+  *::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: #808080;
+    border-radius: 10px;
+    border: 4px solid #ffffff;
+  }
+  ::-webkit-scrollbar-corner {
+    background-color: #ffffff;
+  }
+  .logo {
+    background: url("../img/logo.png") no-repeat center center/contain;
+  }
+  .form__input {
+    background-color: rgba(255, 255, 255, 0.4);
+    color: var(--color-dark);
+  }
+  .form__input:focus {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  .form__btn {
+    background-color: #fff;
+  }
+  .form__btn:focus {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+::root {
+  --color-dark: #333;
+  --color-light: #f3f3f3;
+  --color-white: #fff;
+  --color-light-grey: #ccc;
+  --color-dark-grey: #eee;
+  --color-middle-grey: #777;
+}
+
 * {
   margin: 0;
   padding: 0;
   -webkit-box-sizing: inherit;
           box-sizing: inherit;
+  outline: none;
 }
 
 .preload * {
@@ -18,8 +110,8 @@ html {
 
 body {
   font-family: "Poppins", sans-serif;
-  color: #444;
-  background-color: #f3f3f3;
+  color: var(--color-dark);
+  background-color: var(--color-light);
   height: 100vh;
   padding: 2rem;
 }
@@ -41,7 +133,7 @@ h2 {
   margin-bottom: 1.5rem;
   font-size: 1.7rem;
   font-weight: 600;
-  color: #333;
+  color: var(--color-dark);
 }
 
 .welcome {
@@ -51,6 +143,7 @@ h2 {
 
 .logo {
   height: 5.25rem;
+  width: 5.25rem;
 }
 
 .login {
@@ -60,7 +153,6 @@ h2 {
 }
 
 .login__input {
-  border: none;
   padding: 0.5rem 2rem;
   font-size: 1.6rem;
   font-family: inherit;
@@ -68,38 +160,39 @@ h2 {
   width: 12rem;
   border-radius: 10rem;
   margin-right: 1rem;
-  color: inherit;
-  border: 1px solid #fff;
+  color: var(--color-white);
+  background: #eee;
+  border: 1px solid var(--color-middle-grey);
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
 }
 
 .login__input::focus {
   outline: none;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-light-grey);
 }
 
 .login__input::-webkit-input-placeholder {
-  color: #bbb;
+  color: var(--color-dark-grey);
 }
 
 .login__input:-ms-input-placeholder {
-  color: #bbb;
+  color: var(--color-dark-grey);
 }
 
 .login__input::-ms-input-placeholder {
-  color: #bbb;
+  color: var(--color-dark-grey);
 }
 
 .login__input::placeholder {
-  color: #bbb;
+  color: var(--color-dark-grey);
 }
 
 .login__btn {
   border: none;
   background: none;
   font-size: 2.2rem;
-  color: inherit;
+  color: var(--color-middle-grey);
   cursor: pointer;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
@@ -110,7 +203,7 @@ h2 {
 .btn--sort:hover,
 .btn--sort:focus {
   outline: none;
-  color: #777;
+  color: var(--color-dark);
 }
 
 .app {
@@ -125,7 +218,7 @@ h2 {
       grid-template-rows: auto repeat(3, 15rem) auto;
   gap: 2rem;
   /* NOTE This creates the fade in/out anumation */
-  opacity: 0;
+  opacity: 1;
   -webkit-transition: all 1s;
   transition: all 1s;
 }
@@ -154,7 +247,7 @@ h2 {
 
 .balance__date {
   font-size: 1.4rem;
-  color: #888;
+  color: var(--color-middle-grey);
 }
 
 .balance__value {
@@ -166,9 +259,10 @@ h2 {
   -ms-grid-row: 2;
   -ms-grid-row-span: 3;
   grid-row: 2 / span 3;
-  background-color: #fff;
+  background-color: var(--color-white);
   border-radius: 1rem;
   overflow: scroll;
+  overflow-x: hidden;
 }
 
 .movements__row {
@@ -179,14 +273,14 @@ h2 {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-dark-grey);
 }
 
 .movements__type {
   font-size: 1.1rem;
   text-transform: uppercase;
   font-weight: 500;
-  color: #fff;
+  color: var(--color-white);
   padding: 0.1rem 1rem;
   border-radius: 10rem;
   margin-right: 2rem;
@@ -206,7 +300,7 @@ h2 {
   font-size: 1.1rem;
   text-transform: uppercase;
   font-weight: 500;
-  color: #666;
+  color: var(--color-light-grey);
 }
 
 .movements__value {
@@ -255,6 +349,11 @@ h2 {
   font-size: 1.3rem;
   font-weight: 500;
   cursor: pointer;
+  color: var(--color-middle-grey);
+}
+
+.operation h2 {
+  color: #333;
 }
 
 .operation {
@@ -295,7 +394,7 @@ h2 {
   font-family: inherit;
   font-size: 1.5rem;
   text-align: center;
-  color: #333;
+  color: var(--color-dark);
   padding: 0.3rem 1rem;
   border-radius: 0.7rem;
   -webkit-transition: all 0.3s;
@@ -311,7 +410,6 @@ h2 {
   border: none;
   border-radius: 0.7rem;
   font-size: 1.8rem;
-  background-color: #fff;
   cursor: pointer;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
