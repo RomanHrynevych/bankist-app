@@ -60,14 +60,21 @@ const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
+const inputArray = [
+  inputLoginUsername,
+  inputLoginPin,
+  inputTransferAmount,
+  inputTransferTo,
+  inputLoanAmount,
+  inputCloseUsername,
+  inputClosePin,
+];
 
 const reducer = (accumulator, currentValue) => accumulator + currentValue;
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
-
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 const currencies = new Map([
   ['USD', 'United States dollar'],
@@ -76,8 +83,9 @@ const currencies = new Map([
 ]);
 
 // Calc and Display Balance
-const calcDisplayBalance = function (movements) {
-  labelBalance.innerHTML = `${movements.reduce(reducer)}€`;
+const calcDisplayBalance = function (account) {
+  account.balance = account.movements.reduce(reducer, 0);
+  labelBalance.innerHTML = `${account.balance}€`;
 };
 
 // log deposit of withdraw
@@ -100,24 +108,19 @@ const displayMovements = function (movements) {
 
 // IN / OUT / INTEREST
 const calcSummary = function (account) {
-  const deposits = account.movements.reduce((acc, mov) =>
-    mov > 0 ? acc + mov : acc
+  const deposits = account.movements.reduce(
+    (acc, mov) => (mov > 0 ? acc + mov : acc),
+    0
   );
-  const withdrawals = account.movements.reduce((acc, mov) =>
-    mov < 0 ? acc + mov : acc
+  const withdrawals = account.movements.reduce(
+    (acc, mov) => (mov < 0 ? acc + mov : acc),
+    0
   );
   const interest = (deposits * account.interestRate) / 100;
   labelSumIn.innerHTML = `${deposits}€`;
   labelSumOut.innerHTML = `${withdrawals}€`;
   labelSumInterest.innerHTML = `${interest}€`;
 };
-
-// const account3 = {
-//   owner: 'Steven Thomas Williams',
-//   movements: [200, -200, 340, -300, -20, 50, 400, -460],
-//   interestRate: 0.7,
-//   pin: 3333,
-// };
 
 const createUsernames = function (accs) {
   accs.forEach(function (acc) {
@@ -128,29 +131,41 @@ const createUsernames = function (accs) {
       .join(``);
   });
 };
+const findAccountByUsername = function (name) {
+  return accounts.find(acc => acc.username === name);
+};
+const findAccountByOwner = function (name) {
+  return accounts.find(acc => acc.owner === name);
+};
 createUsernames(accounts);
+
+const updateUI = function (acc) {
+  // Calc Balance
+  calcDisplayBalance(acc);
+  // Calc summary
+  calcSummary(acc);
+  // Display movements
+  displayMovements(acc.movements);
+};
 
 let currentUser;
 
 // Login form event listener
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
-  currentUser = accounts.find(acc => acc.username === inputLoginUsername.value);
+  currentUser = findAccountByUsername(inputLoginUsername.value);
   if (currentUser?.pin === Number(inputLoginPin.value)) {
     // Clear form fields
     inputLoginPin.value = inputLoginUsername.value = '';
-    inputLoginPin.blur();
-    inputLoginUsername.blur();
+    inputArray.forEach(function (mov) {
+      mov.blur();
+    });
     // Display "Hello" message
     labelWelcome.textContent = `Welcome back, ${
       currentUser.owner.split(' ')[0]
     }`;
-    // Calc Balance
-    calcDisplayBalance(currentUser.movements);
-    // Calc summary
-    calcSummary(currentUser);
-    // Display movements
-    displayMovements(currentUser.movements);
+    // Update UI
+    updateUI(currentUser);
     //Display UI
     containerApp.style.opacity = 1;
   } else {
@@ -158,6 +173,32 @@ btnLogin.addEventListener('click', function (e) {
     alert(`Login or password is incorrect`);
     return;
   }
+});
+
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const transferToUser = findAccountByOwner(inputTransferTo.value);
+  const amount = Number(inputTransferAmount.value);
+  if (transferToUser !== currentUser) {
+    if (amount < 0) {
+      alert(`You can't type a negative number`);
+      return;
+    }
+    if (currentUser.balance < amount) {
+      alert(`There isn't enough money on your bank account`);
+      return;
+    }
+    currentUser.movements.push(-amount);
+    transferToUser.movements.push(amount);
+    updateUI(currentUser);
+    inputTransferAmount.value = inputTransferTo.value = '';
+    inputArray.forEach(function (mov) {
+      mov.blur();
+    });
+  } else {
+    alert(`This account is't exist ⛔️ or you try transfer to yourself 😁`);
+  }
+  // inputTransferAmount inputTransferTo
 });
 
 /////////////////////////////////////////////////
