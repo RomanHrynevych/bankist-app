@@ -180,8 +180,8 @@ btnTransfer.addEventListener('click', function (e) {
   const transferToUser = findAccountByOwner(inputTransferTo.value);
   const amount = Number(inputTransferAmount.value);
   if (transferToUser !== currentUser && transferToUser) {
-    if (amount < 0) {
-      alert(`You can't type a negative number`);
+    if (amount <= 0) {
+      alert(`You can't type a negative number or 0`);
       return;
     }
     if (currentUser.balance < amount) {
