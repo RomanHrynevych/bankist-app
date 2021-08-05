@@ -108,15 +108,18 @@ const displayMovements = function (movements) {
 
 // IN / OUT / INTEREST
 const calcSummary = function (account) {
-  const deposits = account.movements.reduce(
+  let deposits = account.movements.reduce(
     (acc, mov) => (mov > 0 ? acc + mov : acc),
     0
   );
-  const withdrawals = account.movements.reduce(
+  let withdrawals = account.movements.reduce(
     (acc, mov) => (mov < 0 ? acc + mov : acc),
     0
   );
-  const interest = (deposits * account.interestRate) / 100;
+  let interest = (deposits * account.interestRate) / 100;
+  deposits = deposits.toFixed(2);
+  withdrawals = withdrawals.toFixed(2);
+  interest = interest.toFixed(2);
   labelSumIn.innerHTML = `${deposits}€`;
   labelSumOut.innerHTML = `${withdrawals}€`;
   labelSumInterest.innerHTML = `${interest}€`;
@@ -175,6 +178,7 @@ btnLogin.addEventListener('click', function (e) {
   }
 });
 
+// Transfer function between 2 accounts
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   const transferToUser = findAccountByOwner(inputTransferTo.value);
@@ -200,6 +204,25 @@ btnTransfer.addEventListener('click', function (e) {
   }
 });
 
+//Request Lone function
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  if (currentUser.movements.some(mov => mov > 0.1 * amount) && amount > 0) {
+    currentUser.movements.push(amount);
+    updateUI(currentUser);
+  } else {
+    alert(
+      `Max size of loan can be ${Math.max(...currentUser.movements) * 10 - 1}`
+    );
+  }
+  inputArray.forEach(function (mov) {
+    mov.value = '';
+    mov.blur();
+  });
+});
+
+// Function to close the account
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
   if (
@@ -213,6 +236,24 @@ btnClose.addEventListener('click', function (e) {
       mov.value = '';
       mov.blur();
     });
+  }
+});
+
+// Sorting function
+let sortBool = 0;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  sortBool++;
+  sortBool = sortBool === 3 ? 0 : sortBool;
+  if (sortBool === 0) {
+    displayMovements(currentUser.movements);
+    btnSort.textContent = `SORT`;
+  } else if (sortBool === 1) {
+    displayMovements([...currentUser.movements].sort((a, b) => a - b));
+    btnSort.textContent = '&downarrow; SORT';
+  } else {
+    displayMovements([...currentUser.movements].sort((a, b) => b - a));
+    btnSort.textContent = 'UNSORT';
   }
 });
 
