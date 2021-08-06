@@ -111,7 +111,7 @@ const displayMovements = function (movements) {
           ${i + 1} ${type}
         </div>
         <div class="movements__date"></div>
-        <div class="movements__value">${mov}€</div>
+        <div class="movements__value">${mov.toFixed(2)}€</div>
       </div>
     `;
     containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -129,12 +129,9 @@ const calcSummary = function (account) {
     0
   );
   let interest = (deposits * account.interestRate) / 100;
-  deposits = deposits.toFixed(2);
-  withdrawals = withdrawals.toFixed(2);
-  interest = interest.toFixed(2);
-  labelSumIn.innerHTML = `${deposits}€`;
-  labelSumOut.innerHTML = `${withdrawals}€`;
-  labelSumInterest.innerHTML = `${interest}€`;
+  labelSumIn.innerHTML = `${deposits.toFixed(2)}€`;
+  labelSumOut.innerHTML = `${withdrawals.toFixed(2)}€`;
+  labelSumInterest.innerHTML = `${interest.toFixed(2)}€`;
 };
 
 const createUsernames = function (accs) {
@@ -169,7 +166,7 @@ let currentUser;
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
   currentUser = findAccountByUsername(inputLoginUsername.value);
-  if (currentUser?.pin === Number(inputLoginPin.value)) {
+  if (currentUser?.pin === +inputLoginPin.value) {
     // Clear form fields
     inputLoginPin.value = inputLoginUsername.value = '';
     inputArray.forEach(function (mov) {
@@ -194,7 +191,7 @@ btnLogin.addEventListener('click', function (e) {
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   const transferToUser = findAccountByOwner(inputTransferTo.value);
-  const amount = Number(inputTransferAmount.value);
+  const amount = +inputTransferAmount.value;
   if (transferToUser !== currentUser && transferToUser) {
     if (amount <= 0) {
       alert(`You can't type a negative number or 0`);
@@ -219,7 +216,7 @@ btnTransfer.addEventListener('click', function (e) {
 //Request Lone function
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
-  const amount = Number(inputLoanAmount.value);
+  const amount = +Math.floor(inputLoanAmount.value);
   if (currentUser.movements.some(mov => mov > 0.1 * amount) && amount > 0) {
     currentUser.movements.push(amount);
     updateUI(currentUser);
@@ -239,7 +236,7 @@ btnClose.addEventListener('click', function (e) {
   e.preventDefault();
   if (
     inputCloseUsername.value === currentUser.username &&
-    Number(inputClosePin.value) === currentUser.pin
+    +inputClosePin.value === currentUser.pin
   ) {
     accounts.splice(accounts.indexOf(currentUser), 1);
     containerApp.style.opacity = 0;
