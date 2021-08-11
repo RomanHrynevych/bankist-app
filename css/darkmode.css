@@ -34,6 +34,12 @@
   .movements__row {
     border-bottom: 2px solid #2a2a2a;
   }
+  .movements__date {
+    color: #fff;
+  }
+  .movements__type {
+    color: #fff;
+  }
   .form__input {
     background-color: rgba(0, 0, 0, 0.6);
   }
@@ -79,6 +85,12 @@
   }
   .movements__row {
     border-bottom: 2px solid #f3f3f3;
+  }
+  .movements__date {
+    color: #333;
+  }
+  .movements__type {
+    color: #fff;
   }
   .logo {
     background: url("../img/logo.png") no-repeat center center/contain;

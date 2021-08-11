@@ -17,9 +17,9 @@ const account1 = {
     '2020-01-28T09:15:04.904Z',
     '2020-04-01T10:17:24.185Z',
     '2020-05-08T14:11:59.604Z',
-    '2020-05-27T17:01:17.194Z',
-    '2020-07-11T23:36:17.929Z',
-    '2020-07-12T10:51:36.790Z',
+    '2021-08-04T17:01:17.194Z',
+    '2021-08-07T23:36:17.929Z',
+    '2021-08-08T10:51:36.790Z',
   ],
   currency: 'EUR',
   locale: 'pt-PT', // de-DE
@@ -84,6 +84,48 @@ const inputArray = [
 
 const reducer = (accumulator, currentValue) => accumulator + currentValue;
 
+const makeMap = function (keys, values) {
+  if (keys.length !== values.length) return;
+  const map = new Map();
+  for (let i = 0; i < keys.length; i++) {
+    map.set(keys[i], values[i]);
+  }
+  return map;
+};
+
+const sortMap = function (map, ascending) {
+  let sorted;
+  if (ascending) {
+    sorted = [...map.entries()].sort((a, b) => a[1] - b[1]);
+  } else {
+    sorted = [...map.entries()].sort((a, b) => b[1] - a[1]);
+  }
+  const resultMap = new Map();
+  for (let i = 0; i < sorted.length; i++) {
+    resultMap.set(sorted[i][0], sorted[i][1]);
+  }
+  return resultMap;
+};
+// let timerInterval = null;
+const startTimeOut = function () {
+  let time = 10 * 60;
+  let min = String(Math.floor(time / 60)).padStart(2, 0);
+  let sec = String(time % 60).padStart(2, 0);
+  labelTimer.textContent = `${min}:${sec}`;
+  time--;
+  let timerInterval = setInterval(function () {
+    let min = String(Math.floor(time / 60)).padStart(2, 0);
+    let sec = String(time % 60).padStart(2, 0);
+    labelTimer.textContent = `${min}:${sec}`;
+    time--;
+    if (time === -1) {
+      clearInterval(timerInterval);
+      containerApp.style.opacity = 0;
+    }
+  }, 1000);
+  return timerInterval;
+};
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
@@ -94,24 +136,81 @@ const currencies = new Map([
   ['GBP', 'Pound sterling'],
 ]);
 
+// show values with true currency
+const numberFormatterCurrency = function (acc, num) {
+  return new Intl.NumberFormat(acc.locale, {
+    style: 'currency',
+    currency: acc.currency,
+  }).format(num.toFixed(2));
+};
+
 // Calc and Display Balance
 const calcDisplayBalance = function (account) {
   account.balance = account.movements.reduce(reducer, 0);
-  labelBalance.innerHTML = `${account.balance}€`;
+  labelBalance.innerHTML = `${numberFormatterCurrency(
+    account,
+    account.balance
+  )}`;
+};
+
+const differenceBetween2Dates = (date1, date2) =>
+  Math.round(Math.abs((date1 - date2) / (1000 * 60 * 60 * 24)));
+
+const FormatDateFun = function (input) {
+  const normalFormatDate = new Date(Date.parse(input));
+  const date = String(normalFormatDate.getDate()).padStart(2, 0);
+  const month = String(normalFormatDate.getMonth() + 1).padStart(2, 0);
+  const year = normalFormatDate.getFullYear();
+  const hour = String(normalFormatDate.getHours()).padStart(2, 0);
+  const minutes = String(normalFormatDate.getMinutes()).padStart(2, 0);
+
+  const difference = differenceBetween2Dates(new Date(), normalFormatDate);
+
+  if (difference === 0) {
+    return `Today ${hour}:${minutes}`;
+  } else if (difference === 1) {
+    return `Yesterday ${hour}:${minutes}`;
+  } else if (difference < 7) {
+    return `${difference} days ago ${hour}:${minutes}`;
+  } else {
+    return `${date}/${month}/${year} ${hour}:${minutes}`;
+  }
 };
 
 // log deposit of withdraw
-const displayMovements = function (movements) {
+const displayMovements = function (acc, sort) {
+  // Sorting type
+  let map = makeMap(acc.movementsDates, acc.movements);
+
+  if (sort === 0) {
+    btnSort.textContent = `↑ SORT`;
+  } else if (sort === 1) {
+    map = sortMap(map, true);
+    btnSort.textContent = '↓ SORT';
+  } else {
+    map = sortMap(map, false);
+    btnSort.textContent = 'UNSORT';
+  }
+
+  // Generate DOM and show
   containerMovements.innerHTML = ``;
+
+  const movements = [...map.values()];
+  const dates = [...map.keys()];
+
   movements.forEach(function (mov, i) {
     const type = mov < 0 ? `withdrawal` : `deposit`;
+    const DateFormat = FormatDateFun(dates[i]);
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">
           ${i + 1} ${type}
         </div>
-        <div class="movements__date"></div>
-        <div class="movements__value">${mov.toFixed(2)}€</div>
+        <div class="movements__date">${DateFormat}</div>
+        <div class="movements__value">${numberFormatterCurrency(
+          acc,
+          acc.movements[i]
+        )}</div>
       </div>
     `;
     containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -129,9 +228,10 @@ const calcSummary = function (account) {
     0
   );
   let interest = (deposits * account.interestRate) / 100;
-  labelSumIn.innerHTML = `${deposits.toFixed(2)}€`;
-  labelSumOut.innerHTML = `${withdrawals.toFixed(2)}€`;
-  labelSumInterest.innerHTML = `${interest.toFixed(2)}€`;
+
+  labelSumIn.innerHTML = `${numberFormatterCurrency(account, deposits)}`;
+  labelSumOut.innerHTML = `${numberFormatterCurrency(account, withdrawals)}`;
+  labelSumInterest.innerHTML = `${numberFormatterCurrency(account, interest)}`;
 };
 
 const createUsernames = function (accs) {
@@ -149,6 +249,16 @@ const findAccountByUsername = function (name) {
 const findAccountByOwner = function (name) {
   return accounts.find(acc => acc.owner === name);
 };
+
+const addCurrentTime = function () {
+  const now = new Date(Date.now()).toLocaleString();
+  const currTime = now.split(', ');
+  const day = currTime[0].split('.').join('/');
+  const time = currTime[1].split(':').slice(0, 2).join(':');
+  labelDate.textContent = `${day}, ${time}`;
+};
+setInterval(addCurrentTime, 1000);
+
 createUsernames(accounts);
 
 const updateUI = function (acc) {
@@ -157,10 +267,12 @@ const updateUI = function (acc) {
   // Calc summary
   calcSummary(acc);
   // Display movements
-  displayMovements(acc.movements);
+  displayMovements(acc, 0);
+  // Display current date
+  addCurrentTime();
 };
 
-let currentUser;
+let currentUser, timer;
 
 // Login form event listener
 btnLogin.addEventListener('click', function (e) {
@@ -178,6 +290,10 @@ btnLogin.addEventListener('click', function (e) {
     }`;
     // Update UI
     updateUI(currentUser);
+    // Start Time out timer
+    if (timer) clearInterval(timer);
+    timer = startTimeOut();
+
     //Display UI
     containerApp.style.opacity = 1;
   } else {
@@ -203,6 +319,8 @@ btnTransfer.addEventListener('click', function (e) {
     }
     currentUser.movements.push(-amount);
     transferToUser.movements.push(amount);
+    currentUser.movementsDates.push(new Date().toISOString());
+    transferToUser.movementsDates.push(new Date().toISOString());
     updateUI(currentUser);
     inputTransferAmount.value = inputTransferTo.value = '';
     inputArray.forEach(function (mov) {
@@ -211,6 +329,9 @@ btnTransfer.addEventListener('click', function (e) {
   } else {
     alert(`This account is't exist ⛔️ or you try transfer to yourself 😁`);
   }
+  // Reload Time out timer
+  if (timer) clearInterval(timer);
+  timer = startTimeOut();
 });
 
 //Request Lone function
@@ -219,6 +340,7 @@ btnLoan.addEventListener('click', function (e) {
   const amount = +Math.floor(inputLoanAmount.value);
   if (currentUser.movements.some(mov => mov > 0.1 * amount) && amount > 0) {
     currentUser.movements.push(amount);
+    currentUser.movementsDates.push(new Date().toISOString());
     updateUI(currentUser);
   } else {
     alert(
@@ -229,6 +351,9 @@ btnLoan.addEventListener('click', function (e) {
     mov.value = '';
     mov.blur();
   });
+  // Reload Time out timer
+  if (timer) clearInterval(timer);
+  timer = startTimeOut();
 });
 
 // Function to close the account
@@ -254,14 +379,5 @@ btnSort.addEventListener('click', function (e) {
   e.preventDefault();
   sortBool++;
   sortBool = sortBool === 3 ? 0 : sortBool;
-  if (sortBool === 0) {
-    displayMovements(currentUser.movements);
-    btnSort.textContent = `↑ SORT`;
-  } else if (sortBool === 1) {
-    displayMovements([...currentUser.movements].sort((a, b) => a - b));
-    btnSort.textContent = '↓ SORT';
-  } else {
-    displayMovements([...currentUser.movements].sort((a, b) => b - a));
-    btnSort.textContent = 'UNSORT';
-  }
+  displayMovements(currentUser, sortBool);
 });
